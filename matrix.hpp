@@ -88,24 +88,6 @@ public:
         return Matrix<T>(result);
     }
 
-    //swap two rows
-    void swap_rows(int row1, int row2) override {
-        int n = get_size();
-        if (row1 < 0 || row1 >= n || row2 < 0 || row2 >= n)
-            throw out_of_range("Row index out of bounds");
-        std::swap(data[row1], data[row2]);
-    }
-
-    //swap two columns
-    void swap_cols(int col1, int col2) override {
-        int n = get_size();
-        if (col1 < 0 || col1 >= n || col2 < 0 || col2 >= n)
-            throw out_of_range("Column index out of bounds");
-        for (int i = 0; i < n; i++) {
-            std::swap(data[i][col1], data[i][col2]);
-        }
-    }
-
     //sum of the main diagonal
     T sum_diagonal_major() const {
         int n = get_size();
@@ -126,17 +108,46 @@ public:
         return sum;
     }
 
+    //swap two rows
+    void swap_rows(int row1, int row2) override {
+        int n = get_size();
+        if (row1 < 0 || row1 >= n || row2 < 0 || row2 >= n)
+            throw out_of_range("Row index out of bounds");
+        std::swap(data[row1], data[row2]);
+    }
+
+    //swap two columns
+    void swap_cols(int col1, int col2) override {
+        int n = get_size();
+        if (col1 < 0 || col1 >= n || col2 < 0 || col2 >= n)
+            throw out_of_range("Column index out of bounds");
+        for (int i = 0; i < n; i++) {
+            std::swap(data[i][col1], data[i][col2]);
+        }
+    }
+
     //print the matrix
     void print() const override {
         int n = get_size();
         for (int i = 0; i < n; i++){
             for (int j = 0; j < n; j++){
-                cout << setw(4) << data[i][j];
+                cout << setw(10) << data[i][j];
             }
             cout << endl;
         }
         cout << endl;
     }
 };
+
+template<typename T>
+Matrix<T> readMatrix(std::istream &in, int size) {
+    vector<vector<T>> mat(size, vector<T>(size));
+    for (int i = 0; i < size; i++){
+        for (int j = 0; j < size; j++){
+            in >> mat[i][j];
+        }
+    }
+    return Matrix<T>(mat);
+}
 
 #endif

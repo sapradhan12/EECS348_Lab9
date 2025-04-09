@@ -1,15 +1,16 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -I.
-LDFLAGS =
+LDFLAGS = 
+TARGET = main
+OBJS = main.o
 
-# Build the main executable.
-all: main
+all: $(TARGET)
 
-main: main.o
-	$(CXX) $(CXXFLAGS) -o main main.o $(LDFLAGS)
+$(TARGET): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
 main.o: main.cpp matrix.hpp
 	$(CXX) $(CXXFLAGS) -c main.cpp
 
 clean:
-	rm -f *.o main
+	rm -f $(OBJS) $(TARGET)
