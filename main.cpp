@@ -2,8 +2,66 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <limits>
 
 using namespace std;
+
+int getValidatedIntInRange(string prompt, int minVal, int maxVal) {
+    int num;
+    bool valid = false;
+    while (!valid) {
+        cout << prompt;
+        cin >> num;
+        if (cin.fail()) {
+            cout << "Invalid input. Please enter an integer." << endl;
+            cin.clear();
+            cin.ignore(1000, '\n');
+        } else if (num < minVal || num > maxVal) {
+            cout << "Input out of range. Please enter an integer between " << minVal << " and " << maxVal << "." << endl;
+            cin.ignore(1000, '\n');
+        } else {
+            valid = true;
+            cin.ignore(1000, '\n');
+        }
+    }
+    return num;
+}
+
+int getValidatedInt(string prompt) {
+    int num;
+    bool valid = false;
+    while (!valid) {
+        cout << prompt;
+        cin >> num;
+        if (cin.fail()) {
+            cout << "Invalid input. Please enter an integer." << endl;
+            cin.clear();
+            cin.ignore(1000, '\n');
+        } else {
+            valid = true;
+            cin.ignore(1000, '\n');
+        }
+    }
+    return num;
+}
+
+double getValidatedDouble(string prompt) {
+    double num;
+    bool valid = false;
+    while (!valid) {
+        cout << prompt;
+        cin >> num;
+        if (cin.fail()) {
+            cout << "Invalid input. Please enter a number." << endl;
+            cin.clear();
+            cin.ignore(1000, '\n');
+        } else {
+            valid = true;
+            cin.ignore(1000, '\n');
+        }
+    }
+    return num;
+}
 
 int main() {
     cout << "Enter the file name: ";
@@ -11,10 +69,13 @@ int main() {
     cin >> filename;
 
     ifstream infile(filename);
+    if (!infile) {
+        cout << "Cannot open file: " << filename << endl;
+        return 1;
+    }
 
     int matrixSize, typeFlag;
     infile >> matrixSize >> typeFlag;
-
     cout << endl;
 
     if (typeFlag == 0) {
@@ -40,41 +101,34 @@ int main() {
         cout << "Sum of secondary diagonal (Matrix1): " << matrix1.sum_diagonal_minor() << endl;
         cout << endl;
 
-        cout << "\n5. Swapping 2 Rows" << endl;
         if (matrixSize >= 2) {
-            int row1, row2;
-            cout << "Enter two row indices (space-separated) to swap for Matrix1: ";
-            cin >> row1 >> row2;
+            cout << "\n5. Swapping 2 Rows" << endl;
+            int row1 = getValidatedIntInRange("Enter the first row index to swap (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
+            int row2 = getValidatedIntInRange("Enter the second row index to swap (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
             Matrix<int> matrix1RowsSwapped = matrix1;
             matrix1RowsSwapped.swap_rows(row1, row2);
             cout << "Matrix1 after swapping rows " << row1 << " and " << row2 << ":" << endl;
             matrix1RowsSwapped.print();
-        } else {
-            cout << "You can't swap rows because the matrix needs to be a 2x2 matrix or larger" << endl;
-        }
-        
-        cout << "\n6. Swapping 2 columns" << endl;
-        if (matrixSize >= 2) {
-            int col1, col2;
-            cout << "Enter two column indices (space-separated) to swap for Matrix1: ";
-            cin >> col1 >> col2;
+
+            cout << "\n6. Swapping 2 Columns" << endl;
+            int col1 = getValidatedIntInRange("Enter the first column index to swap (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
+            int col2 = getValidatedIntInRange("Enter the second column index to swap (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
             Matrix<int> matrix1ColsSwapped = matrix1;
             matrix1ColsSwapped.swap_cols(col1, col2);
             cout << "Matrix1 after swapping columns " << col1 << " and " << col2 << ":" << endl;
             matrix1ColsSwapped.print();
+
+            cout << "\n7. Updating matrix element" << endl;
+            int newValue = getValidatedInt("Enter a new value (integer): ");
+            int row = getValidatedIntInRange("Enter the row index to update (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
+            int col = getValidatedIntInRange("Enter the column index to update (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
+            Matrix<int> matrix1Updated = matrix1;
+            matrix1Updated.set_value(row, col, newValue);
+            cout << "Matrix1 after updating element at (" << row << ", " << col << ") to " << newValue << ":" << endl;
+            matrix1Updated.print();
         } else {
-            cout << "You can't swap columns because the matrix needs to be a 2x2 matrix or larger" << endl;
+            cout << "Matrix size must be at least 2 to swap rows or columns." << endl;
         }
-
-        cout << "\n7. Updating matrix element" << endl;
-        int newValue, row, col;
-        cout << "Enter a new value, row index, and column index (space-separated) for updating Matrix1: ";
-        cin >> newValue >> row >> col;
-        Matrix<int> matrix1Updated = matrix1;
-        matrix1Updated.set_value(row, col, newValue);
-        cout << "Matrix1 after updating element at (" << row << ", " << col << ") to " << newValue << ":" << endl;
-        matrix1Updated.print();
-
     } else if (typeFlag == 1) {
         Matrix<double> matrix1 = readMatrix<double>(infile, matrixSize);
         Matrix<double> matrix2 = readMatrix<double>(infile, matrixSize);
@@ -98,43 +152,36 @@ int main() {
         cout << "Sum of secondary diagonal (Matrix1): " << matrix1.sum_diagonal_minor() << endl;
         cout << endl;
 
-        cout << "\n5. Swapping 2 Rows" << endl;
         if (matrixSize >= 2) {
-            int row1, row2;
-            cout << "Enter two row indices (space-separated) to swap for Matrix1: ";
-            cin >> row1 >> row2;
+            cout << "\n5. Swapping 2 Rows" << endl;
+            int row1 = getValidatedIntInRange("Enter the first row index to swap (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
+            int row2 = getValidatedIntInRange("Enter the second row index to swap (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
             Matrix<double> matrix1RowsSwapped = matrix1;
             matrix1RowsSwapped.swap_rows(row1, row2);
             cout << "Matrix1 after swapping rows " << row1 << " and " << row2 << ":" << endl;
             matrix1RowsSwapped.print();
-        } else {
-            cout << "You can't swap rows because the matrix needs to be a 2x2 matrix or larger" << endl;
-        }
-        
-        cout << "\n6. Swapping 2 Columns" << endl;
-        if (matrixSize >= 2) {
-            int col1, col2;
-            cout << "Enter two column indices (space-separated) to swap for Matrix1: ";
-            cin >> col1 >> col2;
+
+            cout << "\n6. Swapping 2 Columns" << endl;
+            int col1 = getValidatedIntInRange("Enter the first column index to swap (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
+            int col2 = getValidatedIntInRange("Enter the second column index to swap (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
             Matrix<double> matrix1ColsSwapped = matrix1;
             matrix1ColsSwapped.swap_cols(col1, col2);
             cout << "Matrix1 after swapping columns " << col1 << " and " << col2 << ":" << endl;
             matrix1ColsSwapped.print();
-        } else {
-            cout << "You can't swap columns because the matrix needs to be a 2x2 matrix or larger" << endl;
-        }
 
-        cout << "\n7. Updating matrix element" << endl;
-        double newValue;
-        int row, col;
-        cout << "Enter a new value, row index, and column index (space-separated) for updating Matrix1: ";
-        cin >> newValue >> row >> col;
-        Matrix<double> matrix1Updated = matrix1;
-        matrix1Updated.set_value(row, col, newValue);
-        cout << "Matrix1 after updating element at (" << row << ", " << col << ") to " << newValue << ":" << endl;
-        matrix1Updated.print();
+            cout << "\n7. Updating matrix element" << endl;
+            double newValue = getValidatedDouble("Enter a new value (number): ");
+            int row = getValidatedIntInRange("Enter the row index to update (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
+            int col = getValidatedIntInRange("Enter the column index to update (0 to " + to_string(matrixSize - 1) + "): ", 0, matrixSize - 1);
+            Matrix<double> matrix1Updated = matrix1;
+            matrix1Updated.set_value(row, col, newValue);
+            cout << "Matrix1 after updating element at (" << row << ", " << col << ") to " << newValue << ":" << endl;
+            matrix1Updated.print();
+        } else {
+            cout << "Matrix size must be at least 2 to swap rows or columns." << endl;
+        }
     }
-    
+
     infile.close();
     return 0;
 }
