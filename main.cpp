@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 int getValidatedIntInRange(string prompt, int minVal, int maxVal) {
     int num;
     bool valid = false;

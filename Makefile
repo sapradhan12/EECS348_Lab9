@@ -14,3 +14,4 @@ main.o: main.cpp matrix.hpp
 
 clean:
 	rm -f $(OBJS) $(TARGET)
+
